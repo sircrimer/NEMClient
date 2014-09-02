@@ -84,6 +84,10 @@ try:
             request_mods = requests.get('http://bot.notenoughmods.com/' + version_dict[stored[0]] + '.json')
             mods = request_mods.json()
             
+            # get all modnames stored in DB
+            get_db = cursor.execute('SELECT name FROM ' + stored[0] + ';')
+            db_modnames = get_db.fetchall()
+            
             # insert and update mods in version table
             current_mods = []   
             for this_mod in mods:
