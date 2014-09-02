@@ -156,26 +156,26 @@ try:
         try:
             # open file to write in
             with open("display_mods_" + html_name + version + ".html", "w") as file:
-            file.write("<html><h1>" + version + "</h1><table>")
-            
-            # select mod dataset to write to file
-            cursor.execute('SELECT * FROM ' + specifier + version + where +';')
-            display = cursor.fetchall()
-            
-            # write a html table, 1 line per mod 
-            for mod in display:
-                file.write("<tr>")
+                file.write("<html><h1>" + version + "</h1><table>")
                 
-                for item in mod:
-                    if mod.index(item) == 2:
-                        file.write('<td><a href="' + str(item) + '">' + str(item) + '</a></td>')
-                    else:
-                        file.write("<td>" + str(item) + "</td>")
+                # select mod dataset to write to file
+                cursor.execute('SELECT * FROM ' + specifier + version + where +';')
+                display = cursor.fetchall()
                 
-                file.write("</tr>")
+                # write a html table, 1 line per mod 
+                for mod in display:
+                    file.write("<tr>")
+                    
+                    for item in mod:
+                        if mod.index(item) == 2:
+                            file.write('<td><a href="' + str(item) + '">' + str(item) + '</a></td>')
+                        else:
+                            file.write("<td>" + str(item) + "</td>")
+                    
+                    file.write("</tr>")
+                    
+                file.write("</table></html>")
                 
-            file.write("</table></html>")
-            
         except IOError as err:
             print('File error: ' + str(err))
         
