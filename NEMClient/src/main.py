@@ -91,8 +91,10 @@ try:
             # insert and update mods in version table
             current_mods = []   
             for this_mod in mods:
-                cursor.execute('INSERT OR IGNORE INTO ' + stored[0] + '(name, longurl, shorturl, aliases, comment, modid, dev, author, lastupdated, prevversion, dependencies, version, mod_license, my_mod) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?);', (this_mod["name"], this_mod["longurl"], this_mod["shorturl"], str(this_mod["aliases"]), this_mod["comment"], this_mod["modid"], this_mod["dev"], this_mod["author"], this_mod["lastupdated"], this_mod["prevversion"], str(this_mod["dependencies"]), this_mod["version"], this_mod["license"], 0))
-                cursor.execute('UPDATE ' + stored[0] + ' SET longurl = ?, shorturl = ?, aliases = ?, comment = ?, modid = ?, dev = ?, author = ?, lastupdated = ?, prevversion = ?, dependencies = ?, version = ?, mod_license = ? WHERE name = ?;', (this_mod["longurl"], this_mod["shorturl"], str(this_mod["aliases"]), this_mod["comment"], this_mod["modid"], this_mod["dev"], this_mod["author"], this_mod["lastupdated"], this_mod["prevversion"], str(this_mod["dependencies"]), this_mod["version"], this_mod["license"], this_mod["name"] ))
+                if this_mod in db_modnames:
+                    cursor.execute('UPDATE ' + stored[0] + ' SET longurl = ?, shorturl = ?, aliases = ?, comment = ?, modid = ?, dev = ?, author = ?, lastupdated = ?, prevversion = ?, dependencies = ?, version = ?, mod_license = ? WHERE name = ?;', (this_mod["longurl"], this_mod["shorturl"], str(this_mod["aliases"]), this_mod["comment"], this_mod["modid"], this_mod["dev"], this_mod["author"], this_mod["lastupdated"], this_mod["prevversion"], str(this_mod["dependencies"]), this_mod["version"], this_mod["license"], this_mod["name"] ))
+                else:
+                    cursor.execute('INSERT OR IGNORE INTO ' + stored[0] + '(name, longurl, shorturl, aliases, comment, modid, dev, author, lastupdated, prevversion, dependencies, version, mod_license, my_mod) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?);', (this_mod["name"], this_mod["longurl"], this_mod["shorturl"], str(this_mod["aliases"]), this_mod["comment"], this_mod["modid"], this_mod["dev"], this_mod["author"], this_mod["lastupdated"], this_mod["prevversion"], str(this_mod["dependencies"]), this_mod["version"], this_mod["license"], 0))
                 
                 # remember added mods
                 current_mods.append(this_mod["name"])
@@ -159,8 +161,8 @@ try:
     def display_mods(specifier, html_name, version, where=""):
         try:
             # open file to write in
-            with open("display_mods_" + html_name + version + ".html", "w") as file:
-                file.write("<html><h1>" + version + "</h1><table>")
+            with open("display_mods_" + html_name + version + ".html", "w", encoding='utf-8') as file:
+                file.write("<html> <meta charset=\"UTF-8\"> <h1>" + version + "</h1><table>")
                 
                 # select mod dataset to write to file
                 cursor.execute('SELECT * FROM ' + specifier + version + where +';')
@@ -171,11 +173,12 @@ try:
                     file.write("<tr>")
                     
                     for item in mod:
+                        item_value = str(item)
                         if mod.index(item) == 2:
-                            file.write('<td><a href="' + str(item) + '">' + str(item) + '</a></td>')
+                            file.write('<td><a href="' + item_value + '">' + item_value + '</a></td>')
                         else:
-                            file.write("<td>" + str(item) + "</td>")
-                    
+                            file.write("<td>" + item_value + "</td>")
+                            
                     file.write("</tr>")
                     
                 file.write("</table></html>")
