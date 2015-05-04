@@ -1,4 +1,4 @@
 NEMClient
 =========
 
-python cli for NotEnoughMods
+python 3.x cli for NotEnoughMods
